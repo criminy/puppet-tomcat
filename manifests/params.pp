@@ -41,6 +41,9 @@ class tomcat::params {
       "Redhat" => $lsbdistcodename ? {
         "Tikanga"  => "5.5",
         "Santiago" => "6",
+      },
+      "CentOS" => $lsbdistcodename ? {
+        "Final" => "6"
       }
     }
 

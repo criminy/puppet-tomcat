@@ -202,6 +202,7 @@ define tomcat::instance($ensure="present",
   if $tomcat::params::maj_version == "6" and $tomcat::params::type == "package" {
     $catalinahome = $operatingsystem ? {
       RedHat => "/usr/share/tomcat6",
+      CentOS => "/usr/share/tomcat6",
       Debian => "/usr/share/tomcat6",
       Ubuntu => "/usr/share/tomcat6",
     }
@@ -217,6 +218,9 @@ define tomcat::instance($ensure="present",
     case $operatingsystem {
       RedHat: {
         $javahome = "/usr/lib/jvm/java"
+      }
+      CentOS: {
+        $javahome = "/usr/lib/jvm/jre"
       }
       Debian,Ubuntu: {
         $javahome = "/usr"

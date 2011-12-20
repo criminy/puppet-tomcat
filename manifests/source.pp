@@ -31,6 +31,9 @@ class tomcat::source inherits tomcat::base {
     RedHat: {
       package { ["log4j", "jakarta-commons-logging"]: ensure => present }
     }
+    CentOS: {
+      package { ["log4j", "jakarta-commons-logging"]: ensure => present }
+    }
     Debian,Ubuntu: {
       package { ["liblog4j1.2-java", "libcommons-logging-java"]: ensure => present }
     }
@@ -40,7 +43,7 @@ class tomcat::source inherits tomcat::base {
 
   if $tomcat::params::maj_version == "6" {
     # install extra tomcat juli adapters, used to configure logging.
-    include tomcat::juli
+    # include tomcat::juli
   }
 
   # link logging libraries from java

@@ -18,9 +18,9 @@ Usage:
 class tomcat::redhat inherits tomcat::package {
 
   # avoid partial configuration on untested-redhat-release
-  if $lsbdistcodename !~ /^(Tikanga|Santiago)$/ {
-    fail "class ${name} not tested on ${operatingsystem}/${lsbdistcodename}"
-  }
+#  if $lsbdistcodename !~ /^(Tikanga|Santiago)$/ {
+#    fail "class ${name} not tested on ${operatingsystem}/${lsbdistcodename}"
+#  }
 
   package { [
     "log4j", 
@@ -52,6 +52,35 @@ class tomcat::redhat inherits tomcat::package {
 
     Santiago: {
       $tomcat = "tomcat6"
+
+      # replaced the /usr/sbin/tomcat6 included script with setclasspath.sh and catalina.sh
+      file {"/usr/share/${tomcat}/bin/setclasspath.sh":
+        ensure => present,
+        owner  => root,
+        group  => root,
+        mode   => 755,
+        source => "puppet:///modules/tomcat/setclasspath.sh-6.0.24" ,
+        require => [ Package["tomcat"], File["/usr/share/${tomcat}"] ],
+      }
+
+      file {"/usr/share/${tomcat}/bin/catalina.sh":
+        ensure  => present,
+        owner   => root,
+        group   => root,
+        mode    => 755,
+        source  => "puppet:///modules/tomcat/catalina.sh-6.0.24",
+        require => File["/usr/share/${tomcat}/bin/setclasspath.sh"],
+      }
+      
+      Package["tomcat"] { name => $tomcat }
+
+    }
+
+    Final: {
+      $tomcat = "tomcat6"
+      $tomcat_home = "/usr/share/tomcat6"
+
+      include tomcat::juli
 
       # replaced the /usr/sbin/tomcat6 included script with setclasspath.sh and catalina.sh
       file {"/usr/share/${tomcat}/bin/setclasspath.sh":
